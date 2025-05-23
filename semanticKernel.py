@@ -4,6 +4,9 @@ from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from dotenv import load_dotenv
 import os
 load_dotenv()
+
+
+
 API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
 BASEURL = os.getenv("AZURE_OPENAI_ENDPOINT")
 CHAT_DEPLOYMENT_NAME = os.getenv("AZURE_OPENAI_CHAT_DEPLOYMENT_NAME")
@@ -23,11 +26,33 @@ async def main():
         instructions="You are a helpful assistant.",
     )
 
-    # Get a response to a user message
-    response = await agent.get_response(messages="Write a haiku about Semantic Kernel.")
-    print(response.content)
+
+    history = []
+    print("Hello! Please enter a question: ")
+
+    while True:
+        # get the user input
+        user_input = input()
+        # check if the user wants to exit
+        if user_input.lower() == "exit":
+            break
+
+        # Add user message to history
+        history.append(user_input)
+
+        # Get the response from the agent, passing the full history
+        agent_response = await agent.get_response(messages=history)
+        print("AI Agent: ", agent_response.content)
+
+        # Add agent response to history
+        history.append(agent_response.content)
+
+   
 
 asyncio.run(main()) 
 
+
+
+# add history to pass back to the llm everytime
 
 
