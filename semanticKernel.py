@@ -19,15 +19,23 @@ async def main():
         deployment_name=CHAT_DEPLOYMENT_NAME,
     )
 
+    # adding option to pick chat instructions and customize the agent
+    print("Please enter chat instructions for the agent (Enter for default agent): ")
+    instructions = input()
+    if not instructions.strip():
+        instructions = "You are a helpful assistant. Answer the user's questions to the best of your ability."
+
+
     # Initialize a chat agent with basic instructions
     agent = ChatCompletionAgent(
         service=chat_service, # pass the chat service to the agent
         name="SK-Assistant",
-        instructions="You are a helpful assistant.",
+        instructions=instructions, # user provided instructions
     )
 
 
     history = []
+    history.append(instructions)
     print("Hello! Please enter a question: ")
 
     while True:
@@ -51,8 +59,5 @@ async def main():
 
 asyncio.run(main()) 
 
-
-
-# add history to pass back to the llm everytime
 
 
