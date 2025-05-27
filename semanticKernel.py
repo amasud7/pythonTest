@@ -3,7 +3,9 @@ from semantic_kernel.agents import ChatCompletionAgent
 from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from dotenv import load_dotenv
 import os
-from semantic_kernel.contents import ChatHistory
+from semantic_kernel.contents.chat_history import ChatHistory
+from semantic_kernel.contents import ChatMessageContent
+from semantic_kernel.contents.utils.author_role import AuthorRole
 load_dotenv()
 
 # trying ChatHistory for conversation history
@@ -28,8 +30,11 @@ async def main():
     )
 
     # Use ChatHistory for conversation history
-    history = ChatHistory()
-    history.add_system_message("You are a helpful assistant. Please answer the user's questions.")
+
+    chat_history = ChatHistory()
+    chat_history.add_message(ChatMessageContent(role=AuthorRole.SYSTEM, content="You are helpful assistant that provides concise but accessible responses."))
+    # history = ChatHistory()
+    # history.add_system_message("You are a helpful assistant. Please answer the user's questions.")
     print("Hello! Please enter a question: ")
 
     while True:
@@ -37,15 +42,27 @@ async def main():
         if user_input.lower() == "exit":
             break
 
-        # Add user message to ChatHistory
-        history.add_user_message(user_input)
+            # get the user's message and add it to the chat history
+        chat_history.add_message(ChatMessageContent(role=AuthorRole.USER, content=user_input))
 
-        # Get the response from the agent, passing the ChatHistory
-        agent_response = await agent.get_response(messages=history)
+        # send chat the entire history to the agent + get the agent response
+        agent_response = await agent.get_response(messages=chat_history)
+
+        # extract the text from the agent's response
+        response_text = getattr(agent_response.content, "content", str(agent_response.content))
+
+        # now, add the assistant's response to chat history
+        chat_history.add_message(ChatMessageContent(role=AuthorRole.ASSISTANT, content=response_text))
+
+        # # Add user message to ChatHistory
+        # history.add_user_message(user_input)
+
+        # # Get the response from the agent, passing the ChatHistory
+        # agent_response = await agent.get_response(messages=history)
         print("AI Agent: ", agent_response.content)
 
-        # Add agent response to ChatHistory
-        history.add_assistant_message(agent_response.content)
+        # # Add agent response to ChatHistory
+        # history.add_assistant_message(agent_response.content)
 
    
 
