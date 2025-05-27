@@ -4,7 +4,6 @@ from semantic_kernel.connectors.ai.open_ai import AzureChatCompletion
 from dotenv import load_dotenv
 import os
 from semantic_kernel.contents import ChatHistory
-
 load_dotenv()
 
 # trying ChatHistory for conversation history
