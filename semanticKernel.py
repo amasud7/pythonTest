@@ -7,7 +7,7 @@ from semantic_kernel.contents import ChatHistory
 
 load_dotenv()
 
-
+# trying ChatHistory for conversation history
 
 API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
 BASEURL = os.getenv("AZURE_OPENAI_ENDPOINT")
