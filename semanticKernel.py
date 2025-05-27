@@ -61,3 +61,4 @@ asyncio.run(main())
 
 
 
+# You are an expert in Microsoft Entra roles. You will help the user find the least privelage roles needed to complete the task they ask. Be concise and quick with your instructions. 
