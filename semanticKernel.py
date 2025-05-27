@@ -8,7 +8,6 @@ from semantic_kernel.contents import ChatMessageContent
 from semantic_kernel.contents.utils.author_role import AuthorRole
 load_dotenv()
 
-# trying ChatHistory for conversation history
 
 API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
 BASEURL = os.getenv("AZURE_OPENAI_ENDPOINT")
@@ -25,6 +24,7 @@ async def main():
     # adding option to pick chat instructions and customize the agent
     print("Please enter chat instructions for the agent (Enter for default agent): ")
     instructions = input()
+    # default instructions if user does not provide any
     if not instructions.strip():
         instructions = "You are a helpful assistant. Answer the user's questions to the best of your ability."
 
@@ -37,44 +37,32 @@ async def main():
     )
 
     # Use ChatHistory for conversation history
-
     chat_history = ChatHistory()
     chat_history.add_message(ChatMessageContent(role=AuthorRole.SYSTEM, content="You are helpful assistant that provides concise but accessible responses."))
-    # history = ChatHistory()
-    # history.add_system_message("You are a helpful assistant. Please answer the user's questions.")
     print("Hello! Please enter a question: ")
 
     while True:
-        user_input = input()
-        if user_input.lower() == "exit":
+        user_input = input() # user input
+        if user_input.lower() == "exit": # how to exit loop
             break
-
-            # get the user's message and add it to the chat history
+        # get the user's message and add it to the chat history
         chat_history.add_message(ChatMessageContent(role=AuthorRole.USER, content=user_input))
 
-        # send chat the entire history to the agent + get the agent response
+        # pass chat history to agent and get a response
         agent_response = await agent.get_response(messages=chat_history)
 
-        # extract the text from the agent's response
+        # extract respons from agent
         response_text = getattr(agent_response.content, "content", str(agent_response.content))
 
-        # now, add the assistant's response to chat history
+        # add agent response to chat history
         chat_history.add_message(ChatMessageContent(role=AuthorRole.ASSISTANT, content=response_text))
 
-        # # Add user message to ChatHistory
-        # history.add_user_message(user_input)
-
-        # # Get the response from the agent, passing the ChatHistory
-        # agent_response = await agent.get_response(messages=history)
+        # print response.
         print("AI Agent: ", agent_response.content)
-
-        # # Add agent response to ChatHistory
-        # history.add_assistant_message(agent_response.content)
-
-   
 
 asyncio.run(main())
 
+# You are an expert on Microsoft Entra. You will tell the user the least privelage roles and permissions needed to complete a given task. Keep your answer concise and accurate.
 
 
 
